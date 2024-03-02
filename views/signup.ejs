@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+</head>
+<style>
+    .sign-title{
+    
+    text-align: center;
+}
+</style>
+
+<body>
+    <div class="container">
+        <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+          <div class="col-md-3 mb-2 mb-md-0">
+            <a href="/" class="d-inline-flex link-body-emphasis text-decoration-none">
+              BLOGS
+            </a>
+          </div>
+          
+          <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+            <li><a href="/" class="nav-link px-2 link-secondary">Home</a></li>
+            <li><a href="#" class="nav-link px-2">Features</a></li>
+            <li><a href="#" class="nav-link px-2">Pricing</a></li>
+            <li><a href="#" class="nav-link px-2">FAQs</a></li>
+            <li><a href="#" class="nav-link px-2">About</a></li>
+          </ul>
+    
+          <div class="col-md-3 text-end">
+            <!-- <button type="button" class="btn btn-outline-primary me-2">Login</button> -->
+            
+            <button type="button" class="btn btn-primary" onclick="location.href = '/'">Login</button>
+          </div>
+        </header>
+      </div>
+      <div class="container">
+        <div class="sign-title">
+            <h1 class="display-6" >Join the Community and Let Your Voice Be Heard!</h1>
+        </div>
+        <br class="m-5">
+        <div class="col-md-10 mx-auto col-lg-5">
+            <!-- LOGIN FORM -->
+            <form class="p-4 p-md-5 border rounded-3 bg-body-tertiary" method="post" id="form" >
+                
+              <div class="form-floating mb-3">
+                <input type="email" class="form-control" name="email" id="floatingInput" placeholder="name@example.com">
+                <label for="floatingInput">Email address</label>
+              </div>
+              <div class="form-floating mb-3">
+                <input type="name" class="form-control" name="name" id="floatingInput" placeholder="name@example.com">
+                <label for="floatingInput">Name</label>
+              </div>
+              <div class="form-floating mb-3">
+                <input type="password" class="form-control" name="pass" id="floatingPassword" placeholder="Password">
+                <label for="floatingPassword">Password</label>
+              </div>
+              <div class="form-floating mb-3">
+                <input type="password" class="form-control" name="cpass" id="floatingPassword" placeholder="Password">
+                <label for="floatingPassword">Confirm Password</label>
+              </div>
+              <div class="checkbox mb-3">
+                <label>
+                  <input name="remember" type="checkbox" value="remember-me"> Remember me
+                </label>
+              </div>
+              <button class="w-100 btn btn-lg btn-primary" type="submit">Sign Up</button>
+              <hr class="my-4">
+              <% if (locals.error) {%>
+                <style>
+                    .login-quote{
+                      color: red!important;
+                    }
+                </style>
+              <% } %>
+              <small  class="text-body-secondary login-quote"><%=  (locals.error) ? (error) : "Ready to Dive In? Become a Member Today and Start Sharing Your Story!"; %>
+            </form>
+          </div>
+      </div>
+      <script>
+
+        $(document).ready(
+            $("#form").submit((event)=>{
+                
+                console.log("hi");
+                console.log($("input[name='pass']").val());
+                if($("input[name='pass']").val() != $("input[name='cpass']").val()){
+                    alert("Password doesnt mathch");
+                    event.preventDefault();
+                    return;
+                }
+
+            })
+        )
+
+      </script>
+</body>
