@@ -9,6 +9,25 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
 </head>
+<style>
+  .blog-content{
+    display: grid;
+  }
+
+  .blog-content *{
+    margin: 20px 0;
+  }
+
+  .blog-content img{
+    max-width: 100%;
+    justify-self: center;
+  }
+  .blog-content p{
+    line-height: 2.3rem;
+    /* margin: 20px 0; */
+    font-size: 18px;
+  }
+</style>
 <body>
     <div class="container">
         <header class="py-3 mb-3 border-bottom">
@@ -55,11 +74,12 @@
     </div>
 
     
-    <div class="container">
+    <div class="container blog-content col-8">
         <h1 class="h1 display-4"><%= title %></h1>
-        <p style="font-size: 25px;opacity: 0.7;"><%= description %></p>
+        <p style="font-size: 20px;opacity: 0.7;"><%= description %></p>
         <small>Written by <b><%= author %></b></small>
         <br><br>
+        <% console.log(blog) %>
         <% for (var field in blog) { %>
             <% if (field.split("-")[0] == 'para') {%>
                 <p><%= blog[field]  %></p>
@@ -69,8 +89,11 @@
             <% } else if (field.split("-")[0] == 'h') {%>
            
                 <h1 class="h1"><%= blog[field]  %></h1>
-            <% } %>
+            <% } else if (field.split("-")[0] == 'img') { %>
+              
+              <img src=<%="data:"+ blog[`type-${field}`]  %>;base64,<%= blog[field] %> />
 
+            <% } %>
         <% } %>
     </div>
 </body>

@@ -1,5 +1,5 @@
 import pg from 'pg';
-import { readFileSync } from 'fs';
+import fs from 'fs';
 
 // Create a PostgreSQL connection db
 const db = new pg.Client({
@@ -89,4 +89,37 @@ async function retrieveImageAsBase64(imageId) {
   }
   
   // Replace 1 with the ID of the image you want to retrieve
-  displayImage(5);
+  // displayImage(5);
+
+  function convertToBase64(encodedText) {
+    // Convert encoded text to binary
+    const binaryData = Buffer.from(encodedText, 'binary');
+
+    // Convert binary data to Base64
+    const base64String = binaryData.toString('base64');
+
+    return base64String;
+}
+
+// const imageData = fs.readFileSync("./uploads/5d51c40cfc2d621a0453c7032d093f4b");
+
+
+
+// // const bufferHexString = "89504e470d0a1a0a0000000d49484452000003b40000035a0806000000b989005c0000800049444154785eec9d07981545ba"; // Hexadecimal string
+// const bufferData = Buffer.from(imageData, 'hex'); // Create Buffer from hexadecimal string
+// const base64Data = bufferData.toString('base64'); // Convert Buffer to Base64
+
+// console.log(base64Data);
+
+
+// // console.log(base64Data);
+const result =await db.query("SELECT * FROM images WHERE id = 12");
+const data = result.rows[0];
+console.log(data);
+
+// const imageData = fs.readFileSync("./uploads/33ef3af12bc6be567a73fed0d43ae1c1");
+// // const bufferData = Buffer.from(imageData, 'hex'); // Create Buffer from hexadecimal string
+// // const base64Data = bufferData.toString('base64'); // Convert Buffer to Base64
+// const bufferData = Buffer.from(imageData, 'hex'); // Create Buffer from hexadecimal string
+// const base64Data = bufferData.toString('base64'); // Convert Buffer to Base64
+// console.log(base64Data);

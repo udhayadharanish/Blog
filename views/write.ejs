@@ -54,6 +54,9 @@
         padding: 8px 60px;
         font-size: 20px;
     }
+    .hid{
+        display: none;
+    }
     
     
 </style>
@@ -95,7 +98,7 @@
     </div>
     
 
-    <form class="container ips"  action="" method="POST" >
+    <form class="container ips"  action="" method="POST" enctype="multipart/form-data" >
         <div id="inputs">
             <div class="input-group " >
                 <span class="input-group-text" id="inputGroup-sizing-default">Title</span>
@@ -120,14 +123,14 @@
         var subcount = 0;
         var paracount = 0;
         var linkcount = 0;
-        var imagecount = 0;
+        var imagecount = [0,1,2,3,4];
 
         $("#head").click(()=>{
             $("#inputs").append(
         `<div class="input-group mb-3">
             <span class="input-group-text" id="basic-addon1">Heading</span>
             <input type="text" name='h-${headcount++}' class="form-control" placeholder="Heading" aria-label="Username" aria-describedby="basic-addon1">
-            <button class="btn btn-danger dlt" ><i class="fa-solid fa-trash"></i></button>
+            <button type="button" class="btn btn-danger dlt" ><i class="fa-solid fa-trash"></i></button>
         </div>`);
         })
 
@@ -136,7 +139,7 @@
         `<div class="input-group ">
             <span class="input-group-text">Paragraph</span>
             <textarea name='para-${paracount++}' class="form-control" placeholder="content" aria-label="With textarea"></textarea>
-            <button class="btn btn-danger dlt" ><i class="fa-solid fa-trash"></i></button>
+            <button type="button" class="btn btn-danger dlt" ><i class="fa-solid fa-trash"></i></button>
         </div>`);
         });
 
@@ -146,24 +149,40 @@
         <div class="input-group mb-3 ">
             <span class="input-group-text" id="basic-addon1">Subheading</span>
             <input name='sb-${subcount++}' type="text" class="form-control" placeholder="Subheading" aria-label="Username" aria-describedby="basic-addon1">
-            <button class="btn btn-danger dlt" ><i class="fa-solid fa-trash"></i></button>
+            <button type="button" class="btn btn-danger dlt" ><i class="fa-solid fa-trash"></i></button>
         </div>
         `);
         })
 
         $("#img").click(()=>{
-            $("#inputs").append(
-        `
-        <div class="input-group mb-3">
-            <input type="file" name="img-${imagecount++}" accept=".jpg,.jpeg,.png,.gif"  class="form-control" id="inputGroupFile03" aria-describedby="inputGroupFileAddon03" aria-label="Upload">
-        </div>
-        `);
+            if(imagecount.length == 0){
+                alert("Image limit has reached!");
+            }
+            else{
+                $("#inputs").append(
+                    `
+                    <div class="input-group mb-3">
+                        <input type="file" name="img-${imagecount[0]}" accept=".jpg,.jpeg,.png,.gif"  class="form-control" id="inputGroupFile03" aria-describedby="inputGroupFileAddon03" aria-label="Upload">
+                        <input type='text' name="img-${imagecount[0]}"  class='hid'>
+                        <button type="button" class="btn btn-danger dlt" ><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                    
+                    `);
+                imagecount.splice(0,1);
+            }
+            
         })
 
 
         // Event delegation to handle click events on dynamically added .dlt buttons
         $('#inputs').on('click', '.dlt', function() {
-            // Remove the parent element of the clicked button
+            var inputName = $(this).closest('.input-group').find('input').attr('name');
+            var inputNameText = $(this).closest('.input-group').find('textArea').attr('name');
+            console.log(inputName);
+            if(inputName && inputName.split("-")[0] == "img"){
+                imagecount.push(inputName.split("-")[1]);
+            }
+            
             $(this).closest('.input-group').remove();
         });
 
