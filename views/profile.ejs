@@ -10,7 +10,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <style>
-  
+  body{
+    position: relative;
+  }
   .name{
     text-align: center  ;
     margin: 10px;
@@ -87,7 +89,9 @@
       width: 100%;
       
       position: absolute;
-      top: 10px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%,-50%);
       background: transparent;
       justify-content: center;
       display: flex;
@@ -98,8 +102,10 @@
       background-color: white;
       padding: 30px;
       border-radius: 20px;
-      border: 3px rgba(0, 0, 0, 0.6) solid ;
+      /* box-shadow: 5px 5px 5px rgba(255,255,255,0.6); */
+      border: 1px rgba(0, 0, 0, 0.6) solid ;
     }
+    
 </style>
 <body>
   <div class="container">
@@ -128,21 +134,21 @@
   <div class="container profile">
     <div class="row">
       <div class="profile-img col-md-6 ">
-        <img src="../profile.jpg" width="100%" alt="">
+        <img width=100% src=<%="data:"+ ext  %>;base64,<%= image %> />
       </div>
       <div class="profile-about col-md-6">
         <h1 class="name">UDHAY</h1>
         <br>
-        <p>blogs : 13</p>
+        <p>blogs : <%= blog_count %></p>
         <h3>About</h3>
-        <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellendus deleniti sed deserunt soluta sunt blanditiis repudiandae omnis consequuntur pariatur. Repudiandae labore velit atque vel sint soluta temporibus illo esse itaque.</p>
+        <p><%=  (locals.about) ? about : "Update your profile"  %></p>
         <div class="tags">
           <p>Web development</p>
           <p>Web design</p>
           <p>Computer Science</p>
         </div>
         <br>
-        <button class="btn btn-outline-dark ">Update Profile</button>
+        <button class="btn btn-outline-dark " id="show">Update Profile</button>
       </div>
       
     </div>
@@ -168,22 +174,22 @@
 </div>
 
 <div class="update-form" style="display: none;">
-  <form>
+  <form method="post" enctype="multipart/form-data">
     <h3>Update</h3>
     
     <div class="mb-3">
       <label for="exampleInputEmail1" class="form-label">About</label>
-      <textarea type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"></textarea>
+      <textarea type="text" class="form-control" id="about" name="about" aria-describedby="emailHelp"><%= (locals.about) ? about : ""  %></textarea>
       <!-- <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div> -->
     </div>
 
     <div class="mb-3">
       <label for="exampleInputPassword1" class="form-label">Profile image</label>
-      <input type="file" class="form-control" id="exampleInputPassword1">
+      <input type="file" class="form-control" id="profile" name="image">
     </div>
     
     <button type="submit" id="show" class="btn btn-primary">Submit</button>
-    <button class="btn btn-outline-danger" id="cancel">cancel</button>
+    <button class="btn btn-outline-danger" type="button" id="cancel">cancel</button>
   </form>
 </div>
   <script>
@@ -194,7 +200,7 @@
     );
     $("#show").click(
       ()=>{
-        $(".update-form").slideDown();
+        $(".update-form").slideToggle();
       }
     )
   </script>

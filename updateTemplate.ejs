@@ -1,0 +1,29 @@
+<% for (let field in context) {%>
+    <% l = field.split("-") %>
+    <% console.log("hi",l) %>
+    <% if (l[0] == 'para'){ %>
+        <div class="input-group " >
+            <span class="input-group-text" id="inputGroup-sizing-default">Paragraph</span>
+            <textarea type="text" name="<%= field %>" placeholder="Paragraph" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default"><%= context[field] %></textarea>
+        </div>
+        
+    <% } else if(l[0] == 'sb') {%>
+        <div class="input-group " >
+            <span class="input-group-text" id="inputGroup-sizing-default">Subheading</span>
+            <input type="text" name="<%= field %>" placeholder="Paragraph" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="<%= context[field] %>">
+        </div>
+    <% } else if(l[0] == 'h') {%>
+        <div class="input-group " >
+            <span class="input-group-text" id="inputGroup-sizing-default">Heading</span>
+            <input type="text" name="<%= field %>" placeholder="Paragraph" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="<%= context[field] %>">
+        </div>
+    <% } else if(l[0] == 'img') {%>
+        <div class="input-group " >
+            <div class="image">
+                <img src="data:<%= context[field].ext %>;base64,<%= context[field].image_data.toString("base64")  %>" alt="">
+            </div>
+            <!-- <span class="input-group-text" id="inputGroup-sizing-default">Choose file</span> -->
+            <input type="file" name="<%= field %>" placeholder="Paragraph" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="<% context[field] %>">
+        </div>
+    <% } %>
+<% }%>

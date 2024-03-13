@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+</head>
+<style>
+    
+    .image{
+        height: 200px;
+        width: 300px;
+        /* width: 50%; */
+    }
+    .image img{
+        height: 100%;
+        width: 100%;
+    }
+    .input-group{
+        margin: 20px 0;
+    }
+    .options{
+        width: 100%;
+        scale: 0.75;
+        margin: 5px 0;
+        flex-basis: 100%;
+    }
+</style>
+<body>
+    <div class="container">
+        <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+          <div class="col-md-3 mb-2 mb-md-0">
+            <a href="/" class="d-inline-flex link-body-emphasis text-decoration-none">
+              BLOGS
+            </a>
+          </div>
+          
+          <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+            <li><a href="/" class="nav-link px-2 link-secondary">Home</a></li>
+            <li><a href="#" class="nav-link px-2">Features</a></li>
+            <li><a href="#" class="nav-link px-2">Pricing</a></li>
+            <li><a href="#" class="nav-link px-2">FAQs</a></li>
+            <li><a href="#" class="nav-link px-2">About</a></li>
+          </ul>
+  
+          <div class="col-md-3 text-end">
+            <!-- <button type="button" class="btn btn-outline-primary me-2">Login</button> -->
+            
+            <button type="button" class="btn btn-primary" onclick="location.href = '/'">Login</button>
+          </div>
+        </header>
+    </div>
+    <div class="container">
+        <form action="" method="post" enctype="multipart/form-data">
+            <div id="inputs">
+                <div class="input-group " >
+                    <span class="input-group-text" id="inputGroup-sizing-default">Title</span>
+                    <input type="text" name="title" placeholder="Blog title" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="<%= context["title"] %>">
+                    <br>
+                    <div class="options">
+                    
+                        <div >
+                            <button type="button" id="head" name="hey" class=" head btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Heading</button>
+                            <button type="button" id="subhead" class=" subhead btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Sub heading</button>
+                            <button type="button" id="para" class=" para btn btn-outline-dark"><i class="fa-solid fa-plus"></i> New paragraph</button>
+                            <button type="button" id="link" class="link btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Link</button>
+                            <button type="button" id="img" class=" img btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Image</button>
+                            
+                        </div>
+                    </div>
+                </div>
+                
+    
+                <div class="input-group " >
+                    <span class="input-group-text" id="inputGroup-sizing-default">Description</span>
+                    <textarea type="text" name="description" placeholder="Blog Description" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default"><%= context["description"] %></textarea>
+                    <br>
+                    <div  class="options">
+                    
+                        <div>
+                            <button type="button" id="head" name="hey" class=" head btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Heading</button>
+                            <button type="button" id="subhead" class=" subhead btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Sub heading</button>
+                            <button type="button" id="para" class=" para btn btn-outline-dark"><i class="fa-solid fa-plus"></i> New paragraph</button>
+                            <button type="button" id="link" class="link btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Link</button>
+                            <button type="button" id="img" class=" img btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Image</button>
+                            
+                        </div>
+                    </div>
+                </div>
+
+                <% for (let field in context) {%>
+                    <% l = field.split("-") %>
+                    <% console.log("hi",l) %>
+                    <% if (l[0] == 'para'){ %>
+                        <div class="input-group " >
+                            <span class="input-group-text" id="inputGroup-sizing-default">Paragraph</span>
+                            <textarea type="text" name="<%= field %>" placeholder="Paragraph" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default"><%= context[field] %></textarea>
+                            <button type="button" class="btn btn-danger dlt" ><i class="fa-solid fa-trash"></i></button>
+                            <br>
+                            <div  class="options">
+                            
+                                <div>
+                                    <button type="button" id="head" name="hey" class=" head btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Heading</button>
+                                    <button type="button" id="subhead" class=" subhead btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Sub heading</button>
+                                    <button type="button" id="para" class=" para btn btn-outline-dark"><i class="fa-solid fa-plus"></i> New paragraph</button>
+                                    <button type="button" id="link" class="link btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Link</button>
+                                    <button type="button" id="img" class=" img btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Image</button>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                    <% } else if(l[0] == 'sb') {%>
+                        <div class="input-group " >
+                            <span class="input-group-text" id="inputGroup-sizing-default">Subheading</span>
+                            <input type="text" name="<%= field %>" placeholder="Paragraph" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="<%= context[field] %>">
+                            <button type="button" class="btn btn-danger dlt" ><i class="fa-solid fa-trash"></i></button>
+                            <br>
+                            <div  class="options">
+                            
+                                <div>
+                                    <button type="button" id="head" name="hey" class=" head btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Heading</button>
+                                    <button type="button" id="subhead" class=" subhead btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Sub heading</button>
+                                    <button type="button" id="para" class=" para btn btn-outline-dark"><i class="fa-solid fa-plus"></i> New paragraph</button>
+                                    <button type="button" id="link" class="link btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Link</button>
+                                    <button type="button" id="img" class=" img btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Image</button>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    <% } else if(l[0] == 'h') {%>
+                        <div class="input-group " >
+                            <span class="input-group-text" id="inputGroup-sizing-default">Heading</span>
+                            <input type="text" name="<%= field %>" placeholder="Paragraph" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="<%= context[field] %>">
+                            <button type="button" class="btn btn-danger dlt" ><i class="fa-solid fa-trash"></i></button>
+                            <br>
+                            <div  class="options">
+                            
+                                <div>
+                                    <button type="button" id="head" name="hey" class=" head btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Heading</button>
+                                    <button type="button" id="subhead" class=" subhead btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Sub heading</button>
+                                    <button type="button" id="para" class=" para btn btn-outline-dark"><i class="fa-solid fa-plus"></i> New paragraph</button>
+                                    <button type="button" id="link" class="link btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Link</button>
+                                    <button type="button" id="img" class=" img btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Image</button>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    <% } else if(l[0] == 'img') {%>
+                        <div class="input-group " >
+                            <div class="image">
+                                <img src="data:<%= context[field].ext %>;base64,<%= context[field].image_data.toString("base64")  %>" alt="">
+                            </div>
+                            <!-- <span class="input-group-text" id="inputGroup-sizing-default">Choose file</span> -->
+                            <input type="file" name="<%= field %>" placeholder="Paragraph" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="<% context[field] %>">
+                            <button type="button" class="btn btn-danger dlt" ><i class="fa-solid fa-trash"></i></button>
+                            <br>
+                            <div  class="options">
+                            
+                                <div>
+                                    <button type="button" id="head" name="hey" class=" head btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Heading</button>
+                                    <button type="button" id="subhead" class=" subhead btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Sub heading</button>
+                                    <button type="button" id="para" class=" para btn btn-outline-dark"><i class="fa-solid fa-plus"></i> New paragraph</button>
+                                    <button type="button" id="link" class="link btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Link</button>
+                                    <button type="button" id="img" class=" img btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Image</button>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    <% } %>
+                <% }%>
+                
+            </div>
+            
+            
+        </form>
+        
+    </div>
+    <script>
+        $('textarea').on('input', function () {
+    this.style.height = 'auto';
+
+    this.style.height =
+    (this.scrollHeight) + 'px';
+    });
+
+
+    var headcount = 0;
+    var subcount = 0;
+    var paracount = 0;
+    var linkcount = 0;
+    var imagecount = 0;
+
+
+    // DYNAMICALLY ADDING ELEMENTS
+
+
+
+
+    $(document).on("click",".head",(event)=>{
+        console.log(event.target);
+        var div = document.createElement("div");
+        div.innerHTML = `
+        
+        <span class="input-group-text" id="basic-addon1">Heading</span>
+        <input type="text" name='h-${headcount++}' class="form-control" placeholder="Heading" aria-label="Username" aria-describedby="basic-addon1">
+        <button type="button" class="btn btn-danger dlt" ><i class="fa-solid fa-trash"></i></button>
+        <br>
+        <div  class="options">
+        
+            <div>
+                <button type="button" id="head" name="hey" class=" head btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Heading</button>
+                <button type="button" id="subhead" class=" subhead btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Sub heading</button>
+                <button type="button" id="para" class=" para btn btn-outline-dark"><i class="fa-solid fa-plus"></i> New paragraph</button>
+                <button type="button" id="link" class="link btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Link</button>
+                <button type="button" id="img" class=" img btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Image</button>
+                
+            </div>
+        </div>
+        `;
+        div.className = "input-group";
+        event.target.parentElement.parentElement.parentElement.insertAdjacentElement("afterend",div);
+        
+
+        
+        })
+
+        $(document).on("click",".para",(event)=>{
+            
+            var div = document.createElement("div");
+            div.innerHTML = `
+            
+            <span class="input-group-text">Paragraph</span>
+            <textarea name='para-${paracount++}' class="form-control" placeholder="content" aria-label="With textarea"></textarea>
+            <button type="button" class="btn btn-danger dlt" ><i class="fa-solid fa-trash"></i></button>
+            <br>
+            <div  class="options">
+            
+                <div>
+                    <button type="button" id="head" name="hey" class=" head btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Heading</button>
+                    <button type="button" id="subhead" class=" subhead btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Sub heading</button>
+                    <button type="button" id="para" class=" para btn btn-outline-dark"><i class="fa-solid fa-plus"></i> New paragraph</button>
+                    <button type="button" id="link" class="link btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Link</button>
+                    <button type="button" id="img" class=" img btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Image</button>
+                    
+                </div>
+            </div>
+            `;
+            div.className = "input-group";
+            
+            event.target.parentElement.parentElement.parentElement.insertAdjacentElement("afterend",div);
+
+        });
+
+
+        $(document).on("click",".subhead",(event)=>{
+
+            var div = document.createElement("div");
+            div.innerHTML = `
+            
+            <span class="input-group-text" id="basic-addon1">Subheading</span>
+            <input name='sb-${subcount++}' type="text" class="form-control" placeholder="Subheading" aria-label="Username" aria-describedby="basic-addon1">
+            <button type="button" class="btn btn-danger dlt" ><i class="fa-solid fa-trash"></i></button>
+            <br>
+            <div  class="options">
+            
+                <div>
+                    <button type="button"  name="hey" class=" head btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Heading</button>
+                    <button type="button"  class=" subhead btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Sub heading</button>
+                    <button type="button"  class=" para btn btn-outline-dark"><i class="fa-solid fa-plus"></i> New paragraph</button>
+                    <button type="button"  class="link btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Link</button>
+                    <button type="button"  class=" img btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Image</button>
+                    
+                </div>
+            </div>
+            `;
+            div.className = "input-group";
+            event.target.parentElement.parentElement.parentElement.insertAdjacentElement("afterend",div);
+
+        })
+
+        $(document).on("click",".img",(event)=>{
+            var div = document.createElement("div");
+            div.innerHTML = `
+            
+            <input type="file" name="newimg-${imagecount++}" accept=".jpg,.jpeg,.png,.gif"  class="form-control" id="inputGroupFile03" aria-describedby="inputGroupFileAddon03" aria-label="Upload">
+            
+            <button type="button" class="btn btn-danger dlt" ><i class="fa-solid fa-trash"></i></button>
+            <br>
+            <div  class="options">
+            
+                <div>
+                    <button type="button"  name="hey" class=" head btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Heading</button>
+                    <button type="button"  class=" subhead btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Sub heading</button>
+                    <button type="button"  class=" para btn btn-outline-dark"><i class="fa-solid fa-plus"></i> New paragraph</button>
+                    <button type="button"  class="link btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Link</button>
+                    <button type="button"  class=" img btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Image</button>
+                    
+                </div>
+            </div>
+            `;
+            div.className = "input-group";
+            event.target.parentElement.parentElement.parentElement.insertAdjacentElement("afterend",div);
+
+
+            
+            
+        })
+
+
+        // DELETE ELEMENTS
+
+        $('#inputs').on('click', '.dlt', function() {
+            var inputName = $(this).closest('.input-group').find('input').attr('name');
+            var inputNameText = $(this).closest('.input-group').find('textArea').attr('name');
+            console.log(inputName);
+            if(inputName && inputName.split("-")[0] == "img"){
+                imagecount.push(inputName.split("-")[1]);
+            }
+            
+            $(this).closest('.input-group').remove();
+        });
+    </script>
+</body>
+</html>

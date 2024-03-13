@@ -113,13 +113,15 @@ async function retrieveImageAsBase64(imageId) {
 
 
 // // console.log(base64Data);
-const result =await db.query("SELECT * FROM images WHERE id = 12");
-const data = result.rows[0];
-console.log(data);
+// const result =await db.query("SELECT * FROM images WHERE id = 12");
+// const data = result.rows[0];
+// console.log(data);
 
 // const imageData = fs.readFileSync("./uploads/33ef3af12bc6be567a73fed0d43ae1c1");
 // // const bufferData = Buffer.from(imageData, 'hex'); // Create Buffer from hexadecimal string
 // // const base64Data = bufferData.toString('base64'); // Convert Buffer to Base64
-// const bufferData = Buffer.from(imageData, 'hex'); // Create Buffer from hexadecimal string
+const imageData = fs.readFileSync("profile.jpg");
+const bufferData = Buffer.from(imageData, 'hex'); // Create Buffer from hexadecimal string
 // const base64Data = bufferData.toString('base64'); // Convert Buffer to Base64
-// console.log(base64Data);
+const result = await db.query("SELECT image FROM users;");
+console.log(result.rows);

@@ -5,6 +5,8 @@ import bodyParser from "body-parser";
 import pg from "pg";
 import multer from "multer";
 import fs from "fs";
+import exp from "constants";
+import { waitForDebugger } from "inspector";
 
 const db = new pg.Client({
     user : "postgres",
@@ -25,6 +27,7 @@ function saveImageToDB(filename){
 }
 
 
+
 const __filename = fileURLToPath(import.meta.url);
 console.log("filename : ",__filename);
 
@@ -39,7 +42,7 @@ const host = "localhost";
 // const upload = multer();
 
 // middleware
-
+app.use(express.static("public"));
 app.use(bodyParser.urlencoded({extended : true}));
 const upload = multer({ dest: 'uploads/' });
 
@@ -256,7 +259,9 @@ app.post("/write", upload.fields([{name : "img-0",maxCount : 1},{name : "img-1",
         }
     }
     try{
-        await db.query("INSERT INTO blogs (title,description,data,author) VALUES ($1,$2,$3,$4) RETURNING id;",[req.body.title , req.body.description , result , req.body.author],(err , response)=>{
+        await db.query("INSERT INTO blogs (title,description,data,author) VALUES ($1,$2,$3,$4) RETURNING id;",[req.body.title , req.body.description , result , 1],(err , response)=>{
+            if (err) throw err;
+            console.log("Respjnse insert : ",response);
             const id = response.rows[0].id;
             console.log("Blog added successfully !" + id);
         });
@@ -279,8 +284,12 @@ app.get("/profile/:id",async (req,res)=>{
     try{
         const result = await db.query("SELECT * FROM users WHERE id = $1",[id]);
         context = result.rows[0];
+        // console.log(context);
         const blogs = await db.query("SELECT * FROM blogs WHERE author = $1",[id]);
         b = blogs.rows;
+
+        const count = await db.query(`SELECT COUNT(author) FROM blogs WHERE author = $1;`,[id]);
+        data['blog_count'] = count.rows[0].count;
     }
     catch(error){
         if (error) throw error;
@@ -288,9 +297,88 @@ app.get("/profile/:id",async (req,res)=>{
 
     data["name"] = context.name;
     data["blogs"] = b;
-    console.log(data);
+    data['image'] = context.image.toString("base64");
+    data['ext'] = context.ext;
+    data["about"] = context.about;
+    // console.log(data);
+    console.log("jiwelkweklw",context);
     res.render("profile.ejs",data);
-    // res.sendStatus(200);
+    
+})
+
+app.post("/profile/:id", upload.single('image'), async (req, res) => {
+    const id = req.params.id;
+    const file = req.file;
+    console.log("files",file);
+    if(file){
+        const imageData = fs.readFileSync(`uploads/${file.filename}`);
+        const bufferData = Buffer.from(imageData);
+        console.log(req.body);
+        try{
+            const result = await db.query("UPDATE users SET image = $1 WHERE id=$2;",[bufferData,id]);
+            const result2 = await db.query("UPDATE users SET about = $1 WHERE id=$2;",[req.body.about,id]);
+        }
+        catch(error){
+            if (error) throw error;
+        }
+    }
+    else{
+        
+        try{
+            const result3 = await db.query("UPDATE users SET about = $1 WHERE id=$2;",[req.body.about,id]);
+        }
+        catch(error){
+            if (error) throw error;
+        }
+    }
+    
+    res.redirect(`/profile/${id}`);
+
+    // Now you can access file properties like file.filename, file.path, etc.
+});
+
+
+app.get("/update/:id",upload.any(),async (req,res)=>{
+    const id = req.params.id;
+    let data = [];
+    let context = {};
+    let count = 1;
+    try{
+        const blog = await db.query(`SELECT * FROM blogs WHERE id = ${id};`);
+        context = blog.rows[0];
+        data = blog.rows[0].data;
+    }
+    catch(error){
+        if (error) throw error;
+    }
+
+    for(let field of data){
+        const l = field.split("-");
+        if(l[0] == "h"){
+            const heading = await db.query("SELECT heading FROM headings WHERE id = $1",[l[1]]);
+            context[field] = heading.rows[0].heading;
+        }
+        else if(l[0] == 'sb'){
+            const subheading = await db.query("SELECT subheading FROM subheadings WHERE id = $1",[l[1]]);
+            context[field] = subheading.rows[0].subheading;
+        }
+        else if(l[0] == 'para'){
+            const para = await db.query("SELECT para FROM paragraphs WHERE id = $1",[l[1]]);
+            context[field] = para.rows[0].para;
+        }
+        else if(l[0] == "img"){
+            const images = await db.query("SELECT image_data,ext FROM images WHERE id = $1",[l[1]]);
+            context[field] = images.rows[0];
+        }  
+    }
+    console.log(context);
+    res.render("update.ejs",{context : context});
+    
+});
+
+app.post("/update/:id",(req,res)=>{
+    console.log(req.body);
+    res.sendStatus(200);
 })
 
 
