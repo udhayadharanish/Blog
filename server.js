@@ -156,7 +156,7 @@ app.get("/blogs/:id", async (req,res)=>{
     var heading = 0;
     var imageCount = 0;
     for(var field of data){
-        console.log(field);
+        // console.log(field);
         let l = field.split('-');
         if("para" === l[0]){
             const pdata = await db.query(`SELECT para FROM paragraphs WHERE id=${l[1]};`);
@@ -173,7 +173,7 @@ app.get("/blogs/:id", async (req,res)=>{
         else if("img" === l[0]){
             console.log(l[1]);
             const pdata = await db.query(`SELECT image_data , ext  FROM images WHERE id=${l[1]};`);
-            console.log(pdata.rows[0]);
+            // console.log(pdata.rows[0]);
             const bufferString = pdata.rows[0].image_data;
             const base64 = bufferString.toString('base64');
             blog[`img-${imageCount}`] = base64;
@@ -193,7 +193,7 @@ app.get("/write",(req,res)=>{
 })
 
 // Second route handler to handle the updated multer middleware
-app.post("/write", upload.fields([{name : "img-0",maxCount : 1},{name : "img-1",maxCount : 1},{name : "img-2",maxCount : 1},{name : "img-3",maxCount : 1},{name : "img-4",maxCount : 1}]) ,async (req, res) => {
+app.post("/write", upload.any() ,async (req, res) => {
     var result = [];
     const blog = req.body;
     const files = req.files;
@@ -241,10 +241,11 @@ app.post("/write", upload.fields([{name : "img-0",maxCount : 1},{name : "img-1",
         }
         else if(sections[0] == "img"){
             try{
-                const imageData = fs.readFileSync(`./uploads/${files[key][0].filename}`);
+                const filteredObject = files.find(obj => obj.fieldname === key);
+                const imageData = fs.readFileSync(`./uploads/${filteredObject.filename}`);
                 const bufferData = Buffer.from(imageData, 'hex'); // Create Buffer from hexadecimal string
                 
-                await db.query("INSERT INTO images (image_data , ext) VALUES ($1,$2) RETURNING id;",[bufferData,files[key][0].mimetype],(err , response)=>{
+                await db.query("INSERT INTO images (image_data , ext) VALUES ($1,$2) RETURNING id;",[bufferData,filteredObject.mimetype],(err , response)=>{
                     if (err) throw err;
                     console.log(response);
                     const id = response.rows[0].id;
@@ -371,14 +372,145 @@ app.get("/update/:id",upload.any(),async (req,res)=>{
             context[field] = images.rows[0];
         }  
     }
-    console.log(context);
+    // console.log(context);
     res.render("update.ejs",{context : context});
     
 });
 
-app.post("/update/:id",(req,res)=>{
-    console.log(req.body);
-    res.sendStatus(200);
+app.post("/update/:id",upload.any(), async (req,res)=>{
+    const id = req.params.id;
+    var records = [];
+    const body = req.body;
+    const files = req.files;
+    console.log(files);
+    try{
+        const result = await db.query("UPDATE blogs SET title = $1 WHERE id = $2;",[body.title,id]);
+    }
+    catch(error){
+        if (error) throw error;
+    }
+
+    try{
+        const result = await db.query("UPDATE blogs SET description = $1 WHERE id = $2;",[body.description,id]);
+    }
+    catch(error){
+        if (error) throw error;
+    }
+
+    
+
+    for(let field in body){
+        console.log("weiofj",field);
+        const l = field.split("-");
+        console.log(l);
+        if(l[0] == "h"){
+            const heading = await db.query("UPDATE headings SET heading = $1 WHERE id = $2",[body[field],l[1]]);
+            records.push(field);
+            console.log(records);
+            // try{
+                
+            //     console.log("hey");
+            //     data.push(field);
+            //     console.log(data);
+            // }
+            // catch(error){
+            //     if (error) throw error;
+            // }
+            
+            
+        }
+        else if(l[0] == 'sb'){
+            // try{
+            //     const subheading = await db.query("UPDATE subheadings SET subheading = $1 WHERE id = $2",[body[field],l[1]]);
+            //     data.push(field);
+            // }
+            // catch(error){
+            //     if (error) throw error;
+            // }
+            const subheading = await db.query("UPDATE subheadings SET subheading = $1 WHERE id = $2",[body[field],l[1]]);
+            records.push(field);
+            
+            
+        }
+        else if(l[0] == 'para'){
+            // try{
+            //     const para = await db.query("UPDATE paragraphs SET para = $1 WHERE id = $2",[body[field],l[1]]);
+            //     data.push(field);
+            // }
+            // catch(error){
+            //     if (error) throw error;
+            // }
+            const para = await db.query("UPDATE paragraphs SET para = $1 WHERE id = $2",[body[field],l[1]]);
+            records.push(field);
+            
+        }
+        else if(l[0] == "img"){
+            const filteredObject = files.find(obj => obj.fieldname === field);
+            console.log(filteredObject);
+            if(filteredObject){
+                const imageData = fs.readFileSync(`./uploads/${filteredObject.filename}`);
+                const bufferData = Buffer.from(imageData);
+                const images = await db.query("UPDATE images SET image_data = $1 WHERE id = $2",[bufferData,l[1]]);
+                const ext = await db.query("UPDATE images SET ext = $1 WHERE id = $2",[filteredObject.mimetype,l[1]]);
+                
+                // try{
+                //     const images = await db.query("UPDATE images SET image_data = $1 WHERE id = $2",[bufferData,l[1]]);
+                //     const ext = await db.query("UPDATE images SET ext = $1 WHERE id = $2",[filteredObject.mimetype,l[1]]);
+                //     data.push(field);
+                // }
+                // catch(error){
+                //     if (error) throw error;
+                // }
+            
+            }
+            records.push(field);
+            
+        }  
+        else if(l[0] == "new"){
+            if(l[1] == "h"){
+                console.log("new");
+                try{
+                    await db.query("INSERT INTO headings (heading) VALUES ($1) RETURNING id;",[body[field]],(err , response)=>{
+                        const id = response.rows[0].id;
+                        records.push(`h-${id}`);
+                    });
+                    // console.log(response);
+                }
+                catch(error){
+                    if (error) throw error;
+                }
+            }
+            else if(l[1] == "sb"){
+                console.log("new");
+                const sb = await db.query("INSERT INTO subheadings (subheading) VALUES ($1) RETURNING id;",[body[field]]);
+                const id = sb.rows[0].id
+                records.push(`sb-${id}`);
+            }
+            else if(l[1] == "para"){
+                console.log("new");
+                const para = await db.query("INSERT INTO paragraphs (para) VALUES ($1) RETURNING id;",[body[field]]);
+                const id = para.rows[0].id
+                records.push(`para-${id}`);
+                
+            }
+            else if(l[1] == "img"){
+                console.log("new");
+                const filteredObject = files.find(obj => obj.fieldname === field);
+                const imageData = fs.readFileSync(`./uploads/${filteredObject.filename}`);
+                const bufferData = Buffer.from(imageData, 'hex'); // Create Buffer from hexadecimal string
+                
+                const image = await db.query("INSERT INTO images (image_data , ext) VALUES ($1,$2) RETURNING id;",[bufferData,filteredObject.mimetype]);
+                const id = image.rows[0].id;
+                records.push(`para-${id}`);
+                
+            }
+        }
+    }
+
+    const finalDataUpdate = await db.query("UPDATE blogs SET data=$1 WHERE id=$2;",[records,id]);
+
+    res.redirect(`/update/${id}`);
+
 })
 
 

@@ -123,7 +123,7 @@
         var subcount = 0;
         var paracount = 0;
         var linkcount = 0;
-        var imagecount = [0,1,2,3,4];
+        var imagecount = 0;
 
         $("#head").click(()=>{
             $("#inputs").append(
@@ -162,13 +162,14 @@
                 $("#inputs").append(
                     `
                     <div class="input-group mb-3">
-                        <input type="file" name="img-${imagecount[0]}" accept=".jpg,.jpeg,.png,.gif"  class="form-control" id="inputGroupFile03" aria-describedby="inputGroupFileAddon03" aria-label="Upload">
-                        <input type='text' name="img-${imagecount[0]}"  class='hid'>
+                        <input type="file" name="img-${imagecount}" accept=".jpg,.jpeg,.png,.gif"  class="form-control" id="inputGroupFile03" aria-describedby="inputGroupFileAddon03" aria-label="Upload">
+                        <input type='text' name="img-${imagecount}"  class='hid'>
                         <button type="button" class="btn btn-danger dlt" ><i class="fa-solid fa-trash"></i></button>
                     </div>
                     
                     `);
-                imagecount.splice(0,1);
+                imagecount++;
+                
             }
             
         })
@@ -176,12 +177,12 @@
 
         // Event delegation to handle click events on dynamically added .dlt buttons
         $('#inputs').on('click', '.dlt', function() {
-            var inputName = $(this).closest('.input-group').find('input').attr('name');
-            var inputNameText = $(this).closest('.input-group').find('textArea').attr('name');
-            console.log(inputName);
-            if(inputName && inputName.split("-")[0] == "img"){
-                imagecount.push(inputName.split("-")[1]);
-            }
+            // var inputName = $(this).closest('.input-group').find('input').attr('name');
+            // var inputNameText = $(this).closest('.input-group').find('textArea').attr('name');
+            // console.log(inputName);
+            // if(inputName && inputName.split("-")[0] == "img"){
+            //     imagecount.push(inputName.split("-")[1]);
+            // }
             
             $(this).closest('.input-group').remove();
         });
