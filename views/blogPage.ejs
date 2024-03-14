@@ -20,6 +20,7 @@
 
   .blog-content img{
     max-width: 100%;
+    max-height: 500px;
     justify-self: center;
   }
   .blog-content p{
@@ -76,6 +77,7 @@
     
     <div class="container blog-content col-8">
         <h1 class="h1 display-4"><%= title %></h1>
+        <a href="/update/<%= id %>">update</a>
         <p style="font-size: 20px;opacity: 0.7;"><%= description %></p>
         <small>Written by <b><%= author %></b></small>
         <br><br>

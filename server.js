@@ -182,7 +182,7 @@ app.get("/blogs/:id", async (req,res)=>{
             imageCount++;
         }
     }
-    res.render("blogPage.ejs",{title : title , description : description , author : author , blog : blog});
+    res.render("blogPage.ejs",{id : id ,title : title , description : description , author : author , blog : blog});
 });
 
 
@@ -446,21 +446,12 @@ app.post("/update/:id",upload.any(), async (req,res)=>{
         }
         else if(l[0] == "img"){
             const filteredObject = files.find(obj => obj.fieldname === field);
-            console.log(filteredObject);
+            // console.log(filteredObject);
             if(filteredObject){
                 const imageData = fs.readFileSync(`./uploads/${filteredObject.filename}`);
                 const bufferData = Buffer.from(imageData);
                 const images = await db.query("UPDATE images SET image_data = $1 WHERE id = $2",[bufferData,l[1]]);
                 const ext = await db.query("UPDATE images SET ext = $1 WHERE id = $2",[filteredObject.mimetype,l[1]]);
-                
-                // try{
-                //     const images = await db.query("UPDATE images SET image_data = $1 WHERE id = $2",[bufferData,l[1]]);
-                //     const ext = await db.query("UPDATE images SET ext = $1 WHERE id = $2",[filteredObject.mimetype,l[1]]);
-                //     data.push(field);
-                // }
-                // catch(error){
-                //     if (error) throw error;
-                // }
             
             }
             records.push(field);
@@ -489,7 +480,7 @@ app.post("/update/:id",upload.any(), async (req,res)=>{
             else if(l[1] == "para"){
                 console.log("new");
                 const para = await db.query("INSERT INTO paragraphs (para) VALUES ($1) RETURNING id;",[body[field]]);
-                const id = para.rows[0].id
+                const id = para.rows[0].id;
                 records.push(`para-${id}`);
                 
             }
@@ -501,15 +492,15 @@ app.post("/update/:id",upload.any(), async (req,res)=>{
                 
                 const image = await db.query("INSERT INTO images (image_data , ext) VALUES ($1,$2) RETURNING id;",[bufferData,filteredObject.mimetype]);
                 const id = image.rows[0].id;
-                records.push(`para-${id}`);
-                
+                records.push(`img-${id}`);
+                console.log("images added ")
             }
         }
     }
 
     const finalDataUpdate = await db.query("UPDATE blogs SET data=$1 WHERE id=$2;",[records,id]);
 
-    res.redirect(`/update/${id}`);
+    res.redirect(`/blogs/${id}`);
 
 })
 

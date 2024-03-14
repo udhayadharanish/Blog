@@ -26,12 +26,44 @@
     }
     .options{
         width: 100%;
-        scale: 0.75;
+        display: flex;
+        gap: 10px;
         margin: 5px 0;
         flex-basis: 100%;
+        flex-direction: row;
     }
     .hid{
         display: none;
+    }
+    .options .plus i{
+        font-size: 20px;
+        transition-duration: 0.2s;
+    }
+    .options > .add button{
+        font-size: 14px;
+    }
+    .add{
+        
+    }
+    .plus button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 36px;
+        width: 36px;
+    }
+    .rotate{
+        rotate: 45deg;
+    }
+    .title{
+        font-size: 3rem;
+    }
+    .input-group input,.input-group textarea{
+        border: 1px solid rgba(0,0,0,0.07);
+        font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue","Noto Sans","Liberation Sans",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    }
+    .sb{
+        font-size: 2rem;
     }
 </style>
 <body>
@@ -62,8 +94,8 @@
         <form action="" method="post" enctype="multipart/form-data">
             <div id="inputs">
                 <div class="input-group " >
-                    <span class="input-group-text" id="inputGroup-sizing-default">Title</span>
-                    <input type="text" name="title" placeholder="Blog title" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="<%= context["title"] %>">
+                    <span class="input-group-text " id="inputGroup-sizing-default">Title</span>
+                    <input type="text" name="title"  placeholder="Blog title" class="form-control title" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="<%= context["title"] %>">
                     <br>
                 </div>
                 
@@ -72,9 +104,12 @@
                     <span class="input-group-text" id="inputGroup-sizing-default">Description</span>
                     <textarea type="text" name="description" placeholder="Blog Description" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default"><%= context["description"] %></textarea>
                     <br>
-                    <div  class="options">
                     
-                        <div>
+                    <div  class="options">
+                        <div class="plus">
+                            <button type="button" class="btn btn-outline-success"><i style="pointer-events: none;" class="fa-solid fa-plus" ></i></button>
+                        </div>
+                        <div class="add" style="display: none;">
                             <button type="button" id="head" name="hey" class=" head btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Heading</button>
                             <button type="button" id="subhead" class=" subhead btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Sub heading</button>
                             <button type="button" id="para" class=" para btn btn-outline-dark"><i class="fa-solid fa-plus"></i> New paragraph</button>
@@ -95,8 +130,10 @@
                             <button type="button" class="btn btn-danger dlt" ><i class="fa-solid fa-trash"></i></button>
                             <br>
                             <div  class="options">
-                            
-                                <div>
+                                <div class="plus">
+                                    <button type="button" class="btn btn-outline-success"><i style="pointer-events: none;" class="fa-solid fa-plus" ></i></button>
+                                </div>
+                                <div class="add" style="display: none;">
                                     <button type="button" id="head" name="hey" class=" head btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Heading</button>
                                     <button type="button" id="subhead" class=" subhead btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Sub heading</button>
                                     <button type="button" id="para" class=" para btn btn-outline-dark"><i class="fa-solid fa-plus"></i> New paragraph</button>
@@ -111,12 +148,14 @@
                     <% } else if(l[0] == 'sb') {%>
                         <div class="input-group " >
                             <span class="input-group-text" id="inputGroup-sizing-default">Subheading</span>
-                            <input type="text" name="<%= field %>" placeholder="Paragraph" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="<%= context[field] %>">
+                            <input type="text" name="<%= field %>" placeholder="Paragraph" class="form-control sb" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="<%= context[field] %>">
                             <button type="button" class="btn btn-danger dlt" ><i class="fa-solid fa-trash"></i></button>
                             <br>
                             <div  class="options">
-                            
-                                <div>
+                                <div class="plus">
+                                    <button type="button" class="btn btn-outline-success"><i style="pointer-events: none;" class="fa-solid fa-plus" ></i></button>
+                                </div>
+                                <div class="add" style="display: none;">
                                     <button type="button" id="head" name="hey" class=" head btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Heading</button>
                                     <button type="button" id="subhead" class=" subhead btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Sub heading</button>
                                     <button type="button" id="para" class=" para btn btn-outline-dark"><i class="fa-solid fa-plus"></i> New paragraph</button>
@@ -133,8 +172,10 @@
                             <button type="button" class="btn btn-danger dlt" ><i class="fa-solid fa-trash"></i></button>
                             <br>
                             <div  class="options">
-                            
-                                <div>
+                                <div class="plus">
+                                    <button type="button" class="btn btn-outline-success"><i style="pointer-events: none;" class="fa-solid fa-plus" ></i></button>
+                                </div>
+                                <div class="add" style="display: none;">
                                     <button type="button" id="head" name="hey" class=" head btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Heading</button>
                                     <button type="button" id="subhead" class=" subhead btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Sub heading</button>
                                     <button type="button" id="para" class=" para btn btn-outline-dark"><i class="fa-solid fa-plus"></i> New paragraph</button>
@@ -146,17 +187,22 @@
                         </div>
                     <% } else if(l[0] == 'img') {%>
                         <div class="input-group " >
+                            
                             <div class="image">
+    
                                 <img src="data:<%= context[field].ext %>;base64,<%= context[field].image_data.toString("base64")  %>" alt="">
                             </div>
-                            <!-- <span class="input-group-text" id="inputGroup-sizing-default">Choose file</span> -->
+                            <!-- <span class="input-group-text" id="inputGroup-sizing-default">Change file</span> -->
+                            
                             <input type="file" name="<%= field %>" placeholder="Paragraph" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="<% context[field] %>">
                             <input type='text' name="<%= field %>"  class='hid'>
                             <button type="button" class="btn btn-danger dlt" ><i class="fa-solid fa-trash"></i></button>
                             <br>
                             <div  class="options">
-                            
-                                <div>
+                                <div class="plus">
+                                    <button type="button" class="btn btn-outline-success"><i style="pointer-events: none;" class="fa-solid fa-plus" ></i></button>
+                                </div>
+                                <div class="add" style="display: none;">
                                     <button type="button" id="head" name="hey" class=" head btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Heading</button>
                                     <button type="button" id="subhead" class=" subhead btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Sub heading</button>
                                     <button type="button" id="para" class=" para btn btn-outline-dark"><i class="fa-solid fa-plus"></i> New paragraph</button>
@@ -205,14 +251,16 @@
         <button type="button" class="btn btn-danger dlt" ><i class="fa-solid fa-trash"></i></button>
         <br>
         <div  class="options">
-        
-            <div>
-                <button type="button" id="head" name="hey" class=" head btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Heading</button>
-                <button type="button" id="subhead" class=" subhead btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Sub heading</button>
-                <button type="button" id="para" class=" para btn btn-outline-dark"><i class="fa-solid fa-plus"></i> New paragraph</button>
-                <button type="button" id="link" class="link btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Link</button>
-                <button type="button" id="img" class=" img btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Image</button>
-                
+                        <div class="plus">
+                            <button type="button" class="btn btn-outline-success"><i style="pointer-events: none;" class="fa-solid fa-plus" ></i></button>
+                        </div>
+                        <div class="add" style="display: none;">
+                            <button type="button" id="head" name="hey" class=" head btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Heading</button>
+                            <button type="button" id="subhead" class=" subhead btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Sub heading</button>
+                            <button type="button" id="para" class=" para btn btn-outline-dark"><i class="fa-solid fa-plus"></i> New paragraph</button>
+                            <button type="button" id="link" class="link btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Link</button>
+                            <button type="button" id="img" class=" img btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Image</button>
+                            
             </div>
         </div>
         `;
@@ -233,14 +281,16 @@
             <button type="button" class="btn btn-danger dlt" ><i class="fa-solid fa-trash"></i></button>
             <br>
             <div  class="options">
-            
-                <div>
-                    <button type="button" id="head" name="hey" class=" head btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Heading</button>
-                    <button type="button" id="subhead" class=" subhead btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Sub heading</button>
-                    <button type="button" id="para" class=" para btn btn-outline-dark"><i class="fa-solid fa-plus"></i> New paragraph</button>
-                    <button type="button" id="link" class="link btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Link</button>
-                    <button type="button" id="img" class=" img btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Image</button>
-                    
+                        <div class="plus">
+                            <button type="button" class="btn btn-outline-success"><i style="pointer-events: none;" class="fa-solid fa-plus" ></i></button>
+                        </div>
+                        <div class="add" style="display: none;">
+                            <button type="button" id="head" name="hey" class=" head btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Heading</button>
+                            <button type="button" id="subhead" class=" subhead btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Sub heading</button>
+                            <button type="button" id="para" class=" para btn btn-outline-dark"><i class="fa-solid fa-plus"></i> New paragraph</button>
+                            <button type="button" id="link" class="link btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Link</button>
+                            <button type="button" id="img" class=" img btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Image</button>
+                            
                 </div>
             </div>
             `;
@@ -261,15 +311,17 @@
             <button type="button" class="btn btn-danger dlt" ><i class="fa-solid fa-trash"></i></button>
             <br>
             <div  class="options">
-            
-                <div>
-                    <button type="button"  name="hey" class=" head btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Heading</button>
-                    <button type="button"  class=" subhead btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Sub heading</button>
-                    <button type="button"  class=" para btn btn-outline-dark"><i class="fa-solid fa-plus"></i> New paragraph</button>
-                    <button type="button"  class="link btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Link</button>
-                    <button type="button"  class=" img btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Image</button>
-                    
-                </div>
+                        <div class="plus">
+                            <button type="button" class="btn btn-outline-success"><i style="pointer-events: none;" class="fa-solid fa-plus" ></i></button>
+                        </div>
+                        <div class="add" style="display: none;">
+                            <button type="button" id="head" name="hey" class=" head btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Heading</button>
+                            <button type="button" id="subhead" class=" subhead btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Sub heading</button>
+                            <button type="button" id="para" class=" para btn btn-outline-dark"><i class="fa-solid fa-plus"></i> New paragraph</button>
+                            <button type="button" id="link" class="link btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Link</button>
+                            <button type="button" id="img" class=" img btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Image</button>
+                            
+                        </div>
             </div>
             `;
             div.className = "input-group";
@@ -286,15 +338,17 @@
             <button type="button" class="btn btn-danger dlt" ><i class="fa-solid fa-trash"></i></button>
             <br>
             <div  class="options">
-            
-                <div>
-                    <button type="button"  name="hey" class=" head btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Heading</button>
-                    <button type="button"  class=" subhead btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Sub heading</button>
-                    <button type="button"  class=" para btn btn-outline-dark"><i class="fa-solid fa-plus"></i> New paragraph</button>
-                    <button type="button"  class="link btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Link</button>
-                    <button type="button"  class=" img btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Image</button>
-                    
-                </div>
+                        <div class="plus">
+                            <button type="button" class="btn btn-outline-success"><i style="pointer-events: none;" class="fa-solid fa-plus" ></i></button>
+                        </div>
+                        <div class="add" style="display: none;">
+                            <button type="button" id="head" name="hey" class=" head btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Heading</button>
+                            <button type="button" id="subhead" class=" subhead btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Sub heading</button>
+                            <button type="button" id="para" class=" para btn btn-outline-dark"><i class="fa-solid fa-plus"></i> New paragraph</button>
+                            <button type="button" id="link" class="link btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Link</button>
+                            <button type="button" id="img" class=" img btn btn-outline-dark"><i class="fa-solid fa-plus"></i> Image</button>
+                            
+                        </div>
             </div>
             `;
             imagecount++;
@@ -307,6 +361,29 @@
         })
 
 
+        const plusButtons = document.querySelectorAll('.plus');
+    plusButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            console.log("hey");
+            button.querySelector('i').classList.toggle('rotate');
+            const addBlock = button.parentNode.querySelector('.add'); // Targeting the .add block
+            // addBlock.style.display = addBlock.style.display === 'none' ? 'block' : 'none';
+            $(addBlock).slideToggle(100);
+        });
+    });
+        
+
+        // $(".plus").click((event)=>{
+        //     console.log(event.target.parentElement);
+        //     if ($(".plus i").css("rotate") == "45deg"){
+        //         $(".plus i").css("rotate","0deg");
+        //     }
+        //     else{
+        //         $(".plus i").css("rotate","45deg");
+        //     }
+            
+        //     $(".add").slideToggle(100);
+        // })
         // DELETE ELEMENTS
 
         $('#inputs').on('click', '.dlt', function() {
