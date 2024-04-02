@@ -9,14 +9,17 @@ import session from "express-session";
 import passport from "passport";
 import { Strategy } from "passport-local";
 import bcrypt from "bcrypt";
+import env from "dotenv";
+
+env.config();
 
 
 const db = new pg.Client({
-    user : "postgres",
-    host : "localhost",
-    database : "blog",
-    password : "Udhay123",
-    port : 5432,
+    user : process.env.DATABASE_USER,
+    host : process.env.DATABASE_HOST,
+    database : process.env.DATABASE,
+    password : process.env.DATABASE_PASS,
+    port : process.env.DATABASE_PORT,
 });
 db.connect();
 const saltRounds = 10;
@@ -38,7 +41,7 @@ const __dirname = dirname(__filename);
 console.log("dirname : " , __dirname);
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT;
 const host = "localhost";
 
 
@@ -47,7 +50,7 @@ const host = "localhost";
 // middleware
 
 app.use(session({
-    secret : "TOPSECRET",
+    secret : process.env.SESSION_SECRET,
     resave : false,
     saveUninitialized : true,
     cookie : {
@@ -219,8 +222,10 @@ app.get("/blogs/:id", async (req,res)=>{
         }
         const title = response.rows[0].title;
         const description = response.rows[0].description;
-        const q = await db.query("SELECT name from users WHERE id = $1;",[req.user.id]);
+        const q = await db.query("SELECT email,name from users WHERE id = $1;",[req.user.id]);
         const author = q.rows[0].name;
+        const email = q.rows[0].email;
+        
         const data = response.rows[0].data;
         console.log(data);
         let blog = {};
@@ -255,7 +260,11 @@ app.get("/blogs/:id", async (req,res)=>{
                 imageCount++;
             }
         }
-        res.render("blogPage.ejs",{id : id ,title : title , description : description , author : author , blog : blog});
+        let own = false;
+        if(req.user.email == email){
+            own = true;
+        }
+        res.render("blogPage.ejs",{id : id ,title : title , description : description, email : email , user : req.user , author : author , blog : blog});
     }
     else{
         res.redirect("/");
