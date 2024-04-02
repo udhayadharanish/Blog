@@ -91,8 +91,8 @@
               
               <div class="d-flex align-items-center">
                 
-                <form class="w-100 me-3" role="search">
-                  <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
+                <form class="w-100 me-3" role="search" method="get">
+                  <input type="search" name="q" class="form-control" placeholder="Search..." aria-label="Search">
                 </form>
                 
                 <div class="flex-shrink-0 dropdown">
@@ -128,7 +128,7 @@
     <div class="container">
         <div class="row">
             <% for (var it of data) {%>
-              <% console.log(it); %>
+              
             <div class="card col-sm-6 col-md-4 col-lg-3" >
                 <img src="https://media.istockphoto.com/id/876014518/photo/blog-blogging-concept.jpg?s=2048x2048&w=is&k=20&c=IHNJEXMPHM8QlvEYWftvGCCNAl4hLpnTz1CAoAAYM8o=" class="card-img-top" alt="...">
                 <div class="card-body">

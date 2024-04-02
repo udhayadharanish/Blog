@@ -25,7 +25,7 @@
     width: 100%;
     z-index: 1000; /* Optional: Adjust the z-index to ensure the navigation bar appears above other content */
     background-color: rgba(255,255,255,0.85); /* Optional: Add a background color for better visibility */
-}
+    }
     .options{
         width: 100%;
         display: flex;
@@ -177,13 +177,6 @@
 
         // Event delegation to handle click events on dynamically added .dlt buttons
         $('#inputs').on('click', '.dlt', function() {
-            // var inputName = $(this).closest('.input-group').find('input').attr('name');
-            // var inputNameText = $(this).closest('.input-group').find('textArea').attr('name');
-            // console.log(inputName);
-            // if(inputName && inputName.split("-")[0] == "img"){
-            //     imagecount.push(inputName.split("-")[1]);
-            // }
-            
             $(this).closest('.input-group').remove();
         });
 
