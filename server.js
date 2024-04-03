@@ -46,7 +46,7 @@ console.log("dirname : " , __dirname);
 
 const app = express();
 const port = process.env.PORT;
-const host = "localhost";
+// const host = "0.0.0.0";
 
 
 // const upload = multer();
@@ -693,7 +693,7 @@ passport.deserializeUser((user, cb) => {
 cb(null, user);
 });
   
-app.listen(port , host,(err)=>{
+app.listen(port ,(err)=>{
     if(err) throw err;
-    console.log(`Server is listening on http://${host}:${port}`);
+    console.log(`Server is listening on ${port}`);
 })
