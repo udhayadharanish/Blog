@@ -15,11 +15,15 @@ env.config();
 
 
 const db = new pg.Client({
+    
     user : process.env.DATABASE_USER,
     host : process.env.DATABASE_HOST,
     database : process.env.DATABASE,
     password : process.env.DATABASE_PASS,
     port : process.env.DATABASE_PORT,
+    ssl: {
+        rejectUnauthorized: false, // If your SSL/TLS certificate is self-signed or not trusted by a certificate authority (CA), set this to false
+      },
 });
 db.connect();
 const saltRounds = 10;
@@ -139,9 +143,9 @@ app.get('/signup',(req, res)=>{
 
 app.post("/signup", async (req,res)=>{
     var error = false;
-    const email = req.body.email;
-    const password = req.body.pass;
-    
+    const email = req.body.username;
+    const password = req.body.password;
+    console.log(req.body);
     try{
         const check  = await db.query("SELECT * FROM users WHERE email = $1;",[email],(err , r)=>{
             if(err) throw err;
@@ -149,16 +153,27 @@ app.post("/signup", async (req,res)=>{
                 return res.render("signup.ejs",{error : "User already exist with this email"});
             }
             else{
-                bcrypt.hash(req.body.pass , 10 , async (err , encryptedPass)=>{
+                bcrypt.hash(password , saltRounds , async (err , encryptedPass)=>{
                     if (err) {
-                        console.log(err);
+                        console.log(err.message);
+                        throw err;
                     }
-                    const result = await db.query(`INSERT INTO users (name , email , password ) VALUES ($1,$2,$3)`,[req.body.name , req.body.email , encryptedPass]);
-                    console.log(result.rows);
-                    const user = result.rows[0];
-                    req.login(user , (err)=>{
-                        res.redirect("/blogs");
-                    });
+                    else{
+                        const result = await db.query(`INSERT INTO users (name , email , password ) VALUES ($1,$2,$3) RETURNING id;`,[req.body.name , req.body.email , encryptedPass]);
+                        console.log(result.rows[0].id);
+                        const userDetails = await db.query(`SELECT * FROM users WHERE id=$1;`,[result.rows[0].id]);
+                        const user = userDetails.rows[0];
+                        
+                        console.log(user);
+                        req.login(user , (err)=>{
+                            if(err){
+                                console.log("ERROR LOGIN");
+                                throw err;
+                            }
+                            res.redirect("/blogs");
+                        });
+                    }
+                    
                 })
                 
             }
@@ -172,6 +187,7 @@ app.post("/signup", async (req,res)=>{
     
 });
 app.get("/blogs", async (req,res)=>{
+    console.log(req.user)
     if(req.isAuthenticated()){
         let result = [];
         if(req.query.q){
@@ -182,7 +198,7 @@ app.get("/blogs", async (req,res)=>{
         }
         
         // console.log(result.rows);
-        res.render("blog.ejs",{data : result.rows});
+        res.render("blog.ejs",{data : result.rows , id : req.user.id});
     }
     else{
         res.redirect('/');
@@ -191,19 +207,6 @@ app.get("/blogs", async (req,res)=>{
 })
 
 
-
-app.post("/blogs", async (req,res)=>{
-    console.log(req.body.q);
-    if(req.isAuthenticated()){
-        
-        // console.log(result.rows);
-        res.render("blog.ejs",{data : result.rows});
-    }
-    else{
-        res.redirect('/');
-    }
-    
-})
 
 
 
@@ -399,11 +402,17 @@ app.get("/profile/:id",async (req,res)=>{
 
     data["name"] = context.name;
     data["blogs"] = b;
-    data['image'] = context.image.toString("base64");
+    if(context.image){
+        data['image'] = context.image.toString("base64");
+    }
+    else{
+        data['image'] = "";
+    }
+    
     data['ext'] = context.ext;
     data["about"] = context.about;
     // console.log(data);
-    console.log("jiwelkweklw",context);
+    // console.log("jiwelkweklw",context);
     res.render("profile.ejs",data);
    }
    else{
@@ -624,6 +633,28 @@ app.post("/update/:id",upload.any(), async (req,res)=>{
 
 })
 
+app.get('/delete/:id',async (req,res)=>{
+    const id = req.params.id;
+    try{
+        const result = await db.query("DELETE FROM blogs WHERE id = $1;",[id]);
+        res.render("/blogs");
+    }
+    catch(err){
+        throw err;
+        console.log(err);
+    }
+    
+
+})
+
+app.get("/logout", (req, res) => {
+  req.logout(function (err) {
+    if (err) {
+      return next(err);
+    }
+    res.redirect("/");
+  });
+});
 
 passport.use("local" , new Strategy(async function verify(username , password , cb) {
     try{

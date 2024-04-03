@@ -1,0 +1,40 @@
+CREATE TABLE users(
+	id SERIAL PRIMARY KEY,
+	name VARCHAR(100),
+	email TEXT UNIQUE NOT NULL,
+	password TEXT NOT NULL,
+	image BYTEA,
+	about TEXT,
+	gender VARCHAR(6) CHECK (gender IN ('male', 'female','others')),
+	age INT,
+	ext VARCHAR(10)
+)
+
+CREATE TABLE blogs(
+	id SERIAL PRIMARY KEY,
+	title TEXT,
+	description TEXT,
+	data TEXT[],
+	author INTEGER REFERENCES users(id)
+)
+
+CREATE TABLE images(
+	id SERIAL PRIMARY KEY,
+	image_data BYTEA,
+	ext VARCHAR(10)
+)
+
+CREATE TABLE headings(
+	id SERIAL PRIMARY KEY,
+	heading TEXT
+)
+
+CREATE TABLE subheadings(
+	id SERIAL PRIMARY KEY,
+	subheading TEXT
+)
+
+CREATE TABLE paragraphs(
+	id SERIAL PRIMARY KEY,
+	para TEXT
+)

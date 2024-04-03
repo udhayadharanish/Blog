@@ -90,8 +90,9 @@
             $("#form").submit((event)=>{
                 
                 console.log("hi");
-                console.log($("input[name='pass']").val());
-                if($("input[name='pass']").val() != $("input[name='cpass']").val()){
+                console.log($("input[name='password']").val());
+                console.log($("input[name='cpass']").val());
+                if($("input[name='password']").val() != $("input[name='cpass']").val()){
                     alert("Password doesnt mathch");
                     event.preventDefault();
                     return;
