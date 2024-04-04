@@ -637,11 +637,13 @@ app.get('/delete/:id',async (req,res)=>{
     const id = req.params.id;
     try{
         const result = await db.query("DELETE FROM blogs WHERE id = $1;",[id]);
-        res.render("/blogs");
+        res.redirect("/blogs");
     }
     catch(err){
-        throw err;
+        // throw err;
         console.log(err);
+        return "error";
+
     }
     
 
