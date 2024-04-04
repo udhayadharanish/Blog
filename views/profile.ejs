@@ -49,7 +49,11 @@
     }
 
 
-
+    .profile-img{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
     .overflow-paragraph::-webkit-scrollbar {
         width: 3px;
@@ -116,25 +120,19 @@
           </a>
         </div>
         
-        <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-          <li><a href="/" class="nav-link px-2 link-secondary">Home</a></li>
-          <li><a href="#" class="nav-link px-2">Features</a></li>
-          <li><a href="#" class="nav-link px-2">Pricing</a></li>
-          <li><a href="#" class="nav-link px-2">FAQs</a></li>
-          <li><a href="#" class="nav-link px-2">About</a></li>
-        </ul>
+        
 
         <div class="col-md-3 text-end">
           <!-- <button type="button" class="btn btn-outline-primary me-2">Login</button> -->
           
-          <button type="button" class="btn btn-primary" onclick="location.href = '/'">Login</button>
+          <button type="button" class="btn btn-primary"><a class="dropdown-item" href="/logout">Sign out</a></button>
         </div>
       </header>
   </div>
   <div class="container profile">
     <div class="row">
       <div class="profile-img col-md-6 ">
-        <img width=100% src=<%="data:"+ ext  %>;base64,<%= image %> />
+        <img width=70% src=<%="data:"+ ext  %>;base64,<%= image %> />
       </div>
       <div class="profile-about col-md-6">
         <h1 class="name">UDHAY</h1>
@@ -148,7 +146,9 @@
           <p>Computer Science</p>
         </div>
         <br>
+        <% if (user.email == email){  %>
         <button class="btn btn-outline-dark " id="show">Update Profile</button>
+        <% }   %>
       </div>
       
     </div>
@@ -163,9 +163,11 @@
         <div class="card col-sm-6 col-md-4 col-lg-3" >
             <img src="https://media.istockphoto.com/id/876014518/photo/blog-blogging-concept.jpg?s=2048x2048&w=is&k=20&c=IHNJEXMPHM8QlvEYWftvGCCNAl4hLpnTz1CAoAAYM8o=" class="card-img-top" alt="...">
             <div class="card-body">
-              <h5 class="card-title"><%= it.title %></h5>
+
+              <a href="/blogs/<%= it.id  %>"><h5 class="card-title"><%= it.title %></h5></a>
               <p class="card-text overflow-paragraph"><%= it.description %></p>
               <a href="/blogs/<%= it.id  %>" class="btn btn-primary">READ</a>
+
             </div>
         </div>
         <% } %>

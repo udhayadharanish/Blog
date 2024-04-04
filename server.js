@@ -58,7 +58,7 @@ app.use(session({
     resave : false,
     saveUninitialized : true,
     cookie : {
-        maxAge : 10 * 10 * 1000,
+        maxAge : 2*60*60*1000,
     }
 }))
 
@@ -207,9 +207,6 @@ app.get("/blogs", async (req,res)=>{
 })
 
 
-
-
-
 app.get("/blogs/:id", async (req,res)=>{
     if(req.isAuthenticated()){
         const id = parseInt(req.params.id);
@@ -223,10 +220,15 @@ app.get("/blogs/:id", async (req,res)=>{
             if(error) throw error;
             console.log("Error while retriving blogs");
         }
+        
         const title = response.rows[0].title;
         const description = response.rows[0].description;
-        const q = await db.query("SELECT email,name from users WHERE id = $1;",[req.user.id]);
+        // console.log(response.rows[0].id);
+        const q = await db.query("SELECT id,email,name from users WHERE id = $1;",[response.rows[0].author]);
+        console.log(q.rows);
         const author = q.rows[0].name;
+        const authorId = q.rows[0].id;
+        // console.log(response);
         const email = q.rows[0].email;
         
         const data = response.rows[0].data;
@@ -267,7 +269,7 @@ app.get("/blogs/:id", async (req,res)=>{
         if(req.user.email == email){
             own = true;
         }
-        res.render("blogPage.ejs",{id : id ,title : title , description : description, email : email , user : req.user , author : author , blog : blog});
+        res.render("blogPage.ejs",{id : id ,title : title , description : description, email : email , user : req.user , author : author , authorId : authorId , blog : blog});
     }
     else{
         res.redirect("/");
@@ -387,19 +389,20 @@ app.get("/profile/:id",async (req,res)=>{
     let data = {}
     let b = {};
     try{
-        const result = await db.query("SELECT * FROM users WHERE id = $1",[id]);
+        const result = await db.query("SELECT * FROM users WHERE id = $1;",[id]);
+        console.log(result,id);
         context = result.rows[0];
         // console.log(context);
-        const blogs = await db.query("SELECT * FROM blogs WHERE author = $1",[id]);
+        const blogs = await db.query("SELECT * FROM blogs WHERE author = $1;",[id]);
         b = blogs.rows;
-
+        
         const count = await db.query(`SELECT COUNT(author) FROM blogs WHERE author = $1;`,[id]);
         data['blog_count'] = count.rows[0].count;
     }
     catch(error){
         if (error) throw error;
     }
-
+    console.log(context)
     data["name"] = context.name;
     data["blogs"] = b;
     if(context.image){
@@ -411,6 +414,8 @@ app.get("/profile/:id",async (req,res)=>{
     
     data['ext'] = context.ext;
     data["about"] = context.about;
+    data["user"] = req.user;
+    data["email"] = context.email;
     // console.log(data);
     // console.log("jiwelkweklw",context);
     res.render("profile.ejs",data);
@@ -522,8 +527,6 @@ app.post("/update/:id",upload.any(), async (req,res)=>{
             if (error) throw error;
         }
 
-        
-
         for(let field in body){
             console.log("weiofj",field);
             const l = field.split("-");
@@ -622,15 +625,12 @@ app.post("/update/:id",upload.any(), async (req,res)=>{
                 }
             }
         }
-
         const finalDataUpdate = await db.query("UPDATE blogs SET data=$1 WHERE id=$2;",[records,id]);
-
         res.redirect(`/blogs/${id}`);
     }
     else{
         res.redirect("/");
     }
-
 })
 
 app.get('/delete/:id',async (req,res)=>{
@@ -643,10 +643,7 @@ app.get('/delete/:id',async (req,res)=>{
         // throw err;
         console.log(err);
         return "error";
-
     }
-    
-
 })
 
 app.get("/logout", (req, res) => {
@@ -676,7 +673,6 @@ passport.use("local" , new Strategy(async function verify(username , password , 
                     cb("Password doesn't match");
                 }
             })
-
         }
         else{
             cb("No user found");

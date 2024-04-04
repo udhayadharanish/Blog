@@ -31,13 +31,13 @@
 </style>
 <body>
     <div class="container">
-        <header class="py-3 mb-3 border-bottom">
-            <div class="container-fluid d-grid gap-3 align-items-center" style="grid-template-columns: 1fr 2fr;">
+        <header class="py-3 mb-3 border-bottom" >
+            <div class="container-fluid  gap-3 align-items-center" style="display: flex;justify-content: space-between;">
               <div class="dropdown">
                 <a href="#" class="d-flex align-items-center col-lg-4 mb-2 mb-lg-0 link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                   DISCOVER MORE
                 </a>
-                <ul class="dropdown-menu text-small shadow">
+                <!-- <ul class="dropdown-menu text-small shadow">
                   <li><a class="dropdown-item active" href="#" aria-current="page">Overview</a></li>
                   <li><a class="dropdown-item" href="#">Inventory</a></li>
                   <li><a class="dropdown-item" href="#">Customers</a></li>
@@ -45,7 +45,7 @@
                   <li><hr class="dropdown-divider"></li>
                   <li><a class="dropdown-item" href="#">Reports</a></li>
                   <li><a class="dropdown-item" href="#">Analytics</a></li>
-                </ul>
+                </ul> -->
               </div>
               
               <div class="d-flex align-items-center">
@@ -62,7 +62,7 @@
                   
                   <ul class="dropdown-menu text-small shadow">
                     
-                    <li><a class="dropdown-item" href="/profile/<%= id %>">Profile</a></li>
+                    <li><a class="dropdown-item" href="/profile/<%= user.id %>">Profile</a></li>
                     <li><a class="dropdown-item" href="/logout">Sign out</a></li>
                   </ul>
                 </div>
@@ -77,17 +77,19 @@
       <% console.log(user) %>
         <h1 class="h1 display-4"><%= title %></h1>
         <% if(user.email == email) { %>
-          <a href="/update/<%= id %>">update</a>
-          <button onclick="document.getElementById('dlt-form').style.display = 'block';">delete</button>
+          <div>
+            <a class="btn btn-success" href="/update/<%= id %>">Update</a>
+            <button class="btn btn-danger" onclick="document.getElementById('dlt-form').style.display = 'block';">Delete</button>
+          </div>
           <div id="dlt-form" style="display: none;">
              <h3>DO YOU WANT TO DELETE THIS BLOG ?</h3>
-             <button class="btn btn-success" onclick="document.getElementById('dlt-form').style.display = 'none';">cancel</button>
-             <a href="/delete/<%= id %>" class="btn btn-danger">YES</a>
+             <button class="btn btn-success" onclick="document.getElementById('dlt-form').style.display = 'none';">Cancel</button>
+             <a href="/delete/<%= id %>" class="btn btn-danger">Yes</a>
           </div>
         <% }  %>
         
         <p style="font-size: 20px;opacity: 0.7;"><%= description %></p>
-        <small>Written by <b><%= author %></b></small>
+        <a href="/profile/<%= authorId  %>"><small>Written by <b><%= author %></b></small></a>
         <br><br>
         
         <% for (var field in blog) { %>
