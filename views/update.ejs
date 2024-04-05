@@ -330,6 +330,7 @@
         })
 
         $(document).on("click",".img",(event)=>{
+            
             var div = document.createElement("div");
             div.innerHTML = `
             
@@ -361,16 +362,28 @@
         })
 
 
-        const plusButtons = document.querySelectorAll('.plus');
-    plusButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            console.log("hey");
-            button.querySelector('i').classList.toggle('rotate');
-            const addBlock = button.parentNode.querySelector('.add'); // Targeting the .add block
-            // addBlock.style.display = addBlock.style.display === 'none' ? 'block' : 'none';
-            $(addBlock).slideToggle(100);
-        });
-    });
+    //     document.addEventListener("DOMContentLoaded",()=>{
+    //         const plusButtons = document.querySelectorAll('.plus');
+    //         plusButtons.forEach(button => {
+    //             button.addEventListener('click', () => {
+    //                 console.log("hey");
+    //                 button.querySelector('i').classList.toggle('rotate');
+    //                 const addBlock = button.parentNode.querySelector('.add'); // Targeting the .add block
+    //                 // addBlock.style.display = addBlock.style.display === 'none' ? 'block' : 'none';
+    //                 $(addBlock).slideToggle(100);
+    //             });
+    // });
+    //     })
+
+
+    $(document).on("click", ".plus", (event) => {
+    console.log("hey");
+    const button = event.currentTarget;
+    $(button).find('i').toggleClass('rotate');
+    const addBlock = $(button).parent().find('.add');
+    $(addBlock).slideToggle(100);
+});
+
         
 
         // $(".plus").click((event)=>{
