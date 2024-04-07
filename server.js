@@ -124,7 +124,6 @@ app.post("/", (req, res , next)=>{
         }
         req.login(user , (err)=>{
             if(err){
-                throw err;
                 return res.render("index.ejs",{error : err});
             }
     
@@ -142,12 +141,12 @@ app.get('/signup',(req, res)=>{
 });
 
 app.post("/signup", async (req,res)=>{
-    var error = false;
+  
     const email = req.body.username;
     const password = req.body.password;
     console.log(req.body);
     try{
-        const check  = await db.query("SELECT * FROM users WHERE email = $1;",[email],(err , r)=>{
+       await db.query("SELECT * FROM users WHERE email = $1;",[email],(err , r)=>{
             if(err) throw err;
             if(r.rows.length > 0){
                 return res.render("signup.ejs",{error : "User already exist with this email"});
@@ -197,7 +196,7 @@ app.get("/blogs", async (req,res)=>{
             result = await db.query("SELECT id,title,description,author FROM blogs;");
         }
         
-        // console.log(result.rows);
+        
         res.render("blog.ejs",{data : result.rows , id : req.user.id});
     }
     else{
@@ -207,9 +206,10 @@ app.get("/blogs", async (req,res)=>{
 })
 
 
-app.get("/blogs/:id", async (req,res)=>{
+app.get("/blogs/:id", async (req,res) => {
     if(req.isAuthenticated()){
         const id = parseInt(req.params.id);
+        console.log(req.params.id);
         console.log(id);
         let response = {};
         try{
@@ -223,23 +223,23 @@ app.get("/blogs/:id", async (req,res)=>{
         
         const title = response.rows[0].title;
         const description = response.rows[0].description;
-        // console.log(response.rows[0].id);
+        
         const q = await db.query("SELECT id,email,name from users WHERE id = $1;",[response.rows[0].author]);
         console.log(q.rows);
         const author = q.rows[0].name;
         const authorId = q.rows[0].id;
-        // console.log(response);
+        
         const email = q.rows[0].email;
         
         const data = response.rows[0].data;
         console.log(data);
         let blog = {};
-        var paracount = 0;
-        var subheading = 0;
-        var heading = 0;
-        var imageCount = 0;
-        for(var field of data){
-            // console.log(field);
+        let paracount = 0;
+        let subheading = 0;
+        let heading = 0;
+        let imageCount = 0;
+        for(let field of data){
+            
             let l = field.split('-');
             if("para" === l[0]){
                 const pdata = await db.query(`SELECT para FROM paragraphs WHERE id=${l[1]};`);
@@ -256,7 +256,7 @@ app.get("/blogs/:id", async (req,res)=>{
             else if("img" === l[0]){
                 console.log(l[1]);
                 const pdata = await db.query(`SELECT image_data , ext  FROM images WHERE id=${l[1]};`);
-                // console.log(pdata.rows[0]);
+                
                 const bufferString = pdata.rows[0].image_data;
                 const base64 = bufferString.toString('base64');
                 blog[`img-${imageCount}`] = base64;
@@ -265,10 +265,7 @@ app.get("/blogs/:id", async (req,res)=>{
                 imageCount++;
             }
         }
-        let own = false;
-        if(req.user.email == email){
-            own = true;
-        }
+        
         res.render("blogPage.ejs",{id : id ,title : title , description : description, email : email , user : req.user , author : author , authorId : authorId , blog : blog});
     }
     else{
@@ -277,7 +274,7 @@ app.get("/blogs/:id", async (req,res)=>{
 });
 
 
-// var cpUpload = upload.fields([]);
+
 
 app.get("/write",(req,res)=>{
     if(req.isAuthenticated()){
@@ -292,14 +289,14 @@ app.get("/write",(req,res)=>{
 // Second route handler to handle the updated multer middleware
 app.post("/write", upload.any() ,async (req, res) => {
     if(req.isAuthenticated()){
-        var result = [];
+        let result = [];
         const blog = req.body;
         const files = req.files;
         console.log(blog);
         console.log(req.files);
 
         for( let key in blog){
-            var sections = key.split("-");
+            let sections = key.split("-");
             console.log(sections);
             if(sections[0] == "h"){
                 try{
@@ -307,7 +304,7 @@ app.post("/write", upload.any() ,async (req, res) => {
                         const id = response.rows[0].id;
                         result.push(`h-${id}`);
                     });
-                    // console.log(response);
+                    
                 }
                 catch(error){
                     console.log("Error while inserting headings table");
@@ -319,7 +316,7 @@ app.post("/write", upload.any() ,async (req, res) => {
                         const id = response.rows[0].id;
                         result.push(`sb-${id}`);
                     });
-                    // console.log(response);
+                    
                 }
                 catch(error){
                     console.log("Error while inserting subheadings table");
@@ -331,7 +328,7 @@ app.post("/write", upload.any() ,async (req, res) => {
                         const id = response.rows[0].id;
                         result.push(`para-${id}`);
                     });
-                    // console.log(response);
+                    
                 }
                 catch(error){
                     console.log("Error while inserting para table");
@@ -349,7 +346,7 @@ app.post("/write", upload.any() ,async (req, res) => {
                         const id = response.rows[0].id;
                         result.push(`img-${id}`);
                     });
-                    // console.log(response);
+                    
                 }
                 catch(error){
                     if (error) throw error; 
@@ -392,7 +389,7 @@ app.get("/profile/:id",async (req,res)=>{
         const result = await db.query("SELECT * FROM users WHERE id = $1;",[id]);
         console.log(result,id);
         context = result.rows[0];
-        // console.log(context);
+        
         const blogs = await db.query("SELECT * FROM blogs WHERE author = $1;",[id]);
         b = blogs.rows;
         
@@ -416,8 +413,7 @@ app.get("/profile/:id",async (req,res)=>{
     data["about"] = context.about;
     data["user"] = req.user;
     data["email"] = context.email;
-    // console.log(data);
-    // console.log("jiwelkweklw",context);
+    
     res.render("profile.ejs",data);
    }
    else{
@@ -437,8 +433,8 @@ app.post("/profile/:id", upload.single('image'), async (req, res) => {
             const bufferData = Buffer.from(imageData);
             console.log(req.body);
             try{
-                const result = await db.query("UPDATE users SET image = $1 WHERE id=$2;",[bufferData,id]);
-                const result2 = await db.query("UPDATE users SET about = $1 WHERE id=$2;",[req.body.about,id]);
+                await db.query("UPDATE users SET image = $1 WHERE id=$2;",[bufferData,id]);
+                await db.query("UPDATE users SET about = $1 WHERE id=$2;",[req.body.about,id]);
             }
             catch(error){
                 if (error) throw error;
@@ -447,7 +443,7 @@ app.post("/profile/:id", upload.single('image'), async (req, res) => {
         else{
             
             try{
-                const result3 = await db.query("UPDATE users SET about = $1 WHERE id=$2;",[req.body.about,id]);
+                await db.query("UPDATE users SET about = $1 WHERE id=$2;",[req.body.about,id]);
             }
             catch(error){
                 if (error) throw error;
@@ -469,7 +465,7 @@ app.get("/update/:id",upload.any(),async (req,res)=>{
         const id = req.params.id;
         let data = [];
         let context = {};
-        let count = 1;
+       
         try{
             const blog = await db.query(`SELECT * FROM blogs WHERE id = ${id};`);
             context = blog.rows[0];
@@ -498,7 +494,7 @@ app.get("/update/:id",upload.any(),async (req,res)=>{
                 context[field] = images.rows[0];
             }  
         }
-        // console.log(context);
+        
         res.render("update.ejs",{context : context});
     }
     else{
@@ -506,137 +502,117 @@ app.get("/update/:id",upload.any(),async (req,res)=>{
     }
 });
 
-app.post("/update/:id",upload.any(), async (req,res)=>{
-    if(req.isAuthenticated()){
-        const id = req.params.id;
-        var records = [];
-        const body = req.body;
-        const files = req.files;
-        console.log(files);
-        try{
-            const result = await db.query("UPDATE blogs SET title = $1 WHERE id = $2;",[body.title,id]);
-        }
-        catch(error){
-            if (error) throw error;
-        }
+app.post("/update/:id",upload.any(), async (req, res) => {
+        if (req.isAuthenticated()) {
+            const id = req.params.id;
+            let records = [];
+            const body = req.body;
+            const files = req.files;
+            console.log(files);
+            try {
+                await db.query("UPDATE blogs SET title = $1 WHERE id = $2;", [body.title, id]);
+            }
+            catch (error) {
+                if (error) throw error;
+            }
 
-        try{
-            const result = await db.query("UPDATE blogs SET description = $1 WHERE id = $2;",[body.description,id]);
-        }
-        catch(error){
-            if (error) throw error;
-        }
+            try {
+                await db.query("UPDATE blogs SET description = $1 WHERE id = $2;", [body.description, id]);
+            }
+            catch (error) {
+                if (error) throw error;
+            }
 
-        for(let field in body){
-            console.log("weiofj",field);
-            const l = field.split("-");
-            console.log(l);
-            if(l[0] == "h"){
-                const heading = await db.query("UPDATE headings SET heading = $1 WHERE id = $2",[body[field],l[1]]);
-                records.push(field);
-                console.log(records);
-                // try{
-                    
-                //     console.log("hey");
-                //     data.push(field);
-                //     console.log(data);
-                // }
-                // catch(error){
-                //     if (error) throw error;
-                // }
-                
-                
-            }
-            else if(l[0] == 'sb'){
-                // try{
-                //     const subheading = await db.query("UPDATE subheadings SET subheading = $1 WHERE id = $2",[body[field],l[1]]);
-                //     data.push(field);
-                // }
-                // catch(error){
-                //     if (error) throw error;
-                // }
-                const subheading = await db.query("UPDATE subheadings SET subheading = $1 WHERE id = $2",[body[field],l[1]]);
-                records.push(field);
-                
-                
-            }
-            else if(l[0] == 'para'){
-                // try{
-                //     const para = await db.query("UPDATE paragraphs SET para = $1 WHERE id = $2",[body[field],l[1]]);
-                //     data.push(field);
-                // }
-                // catch(error){
-                //     if (error) throw error;
-                // }
-                const para = await db.query("UPDATE paragraphs SET para = $1 WHERE id = $2",[body[field],l[1]]);
-                records.push(field);
-                
-            }
-            else if(l[0] == "img"){
-                const filteredObject = files.find(obj => obj.fieldname === field);
-                // console.log(filteredObject);
-                if(filteredObject){
-                    const imageData = fs.readFileSync(`./uploads/${filteredObject.filename}`);
-                    const bufferData = Buffer.from(imageData);
-                    const images = await db.query("UPDATE images SET image_data = $1 WHERE id = $2",[bufferData,l[1]]);
-                    const ext = await db.query("UPDATE images SET ext = $1 WHERE id = $2",[filteredObject.mimetype,l[1]]);
-                
+            for (let field in body) {
+                console.log("weiofj", field);
+                const l = field.split("-");
+                console.log(l);
+                if (l[0] == "h") {
+                    await db.query("UPDATE headings SET heading = $1 WHERE id = $2", [body[field], l[1]]);
+                    records.push(field);
+                    console.log(records);
+
+
+
                 }
-                records.push(field);
-                
-            }  
-            else if(l[0] == "new"){
-                if(l[1] == "h"){
-                    console.log("new");
-                    try{
-                        await db.query("INSERT INTO headings (heading) VALUES ($1) RETURNING id;",[body[field]],(err , response)=>{
-                            const id = response.rows[0].id;
-                            records.push(`h-${id}`);
-                        });
-                        // console.log(response);
-                    }
-                    catch(error){
-                        if (error) throw error;
-                    }
+                else if (l[0] == 'sb') {
+
+                    await db.query("UPDATE subheadings SET subheading = $1 WHERE id = $2", [body[field], l[1]]);
+                    records.push(field);
+
+
                 }
-                else if(l[1] == "sb"){
-                    console.log("new");
-                    const sb = await db.query("INSERT INTO subheadings (subheading) VALUES ($1) RETURNING id;",[body[field]]);
-                    const id = sb.rows[0].id
-                    records.push(`sb-${id}`);
+                else if (l[0] == 'para') {
+
+                    await db.query("UPDATE paragraphs SET para = $1 WHERE id = $2", [body[field], l[1]]);
+                    records.push(field);
+
                 }
-                else if(l[1] == "para"){
-                    console.log("new");
-                    const para = await db.query("INSERT INTO paragraphs (para) VALUES ($1) RETURNING id;",[body[field]]);
-                    const id = para.rows[0].id;
-                    records.push(`para-${id}`);
-                    
-                }
-                else if(l[1] == "img"){
-                    console.log("new");
+                else if (l[0] == "img") {
                     const filteredObject = files.find(obj => obj.fieldname === field);
-                    const imageData = fs.readFileSync(`./uploads/${filteredObject.filename}`);
-                    const bufferData = Buffer.from(imageData, 'hex'); // Create Buffer from hexadecimal string
-                    
-                    const image = await db.query("INSERT INTO images (image_data , ext) VALUES ($1,$2) RETURNING id;",[bufferData,filteredObject.mimetype]);
-                    const id = image.rows[0].id;
-                    records.push(`img-${id}`);
-                    console.log("images added ")
+
+                    if (filteredObject) {
+                        const imageData = fs.readFileSync(`./uploads/${filteredObject.filename}`);
+                        const bufferData = Buffer.from(imageData);
+                        await db.query("UPDATE images SET image_data = $1 WHERE id = $2", [bufferData, l[1]]);
+                        await db.query("UPDATE images SET ext = $1 WHERE id = $2", [filteredObject.mimetype, l[1]]);
+
+                    }
+                    records.push(field);
+
+                }
+                else if (l[0] == "new") {
+                    if (l[1] == "h") {
+                        console.log("new");
+                        try {
+                            await db.query("INSERT INTO headings (heading) VALUES ($1) RETURNING id;", [body[field]], (err, response) => {
+                                const id = response.rows[0].id;
+                                records.push(`h-${id}`);
+                            });
+
+                        }
+                        catch (error) {
+                            if (error) throw error;
+                        }
+                    }
+                    else if (l[1] == "sb") {
+                        console.log("new");
+                        const sb = await db.query("INSERT INTO subheadings (subheading) VALUES ($1) RETURNING id;", [body[field]]);
+                        const id = sb.rows[0].id;
+                        records.push(`sb-${id}`);
+                    }
+                    else if (l[1] == "para") {
+                        console.log("new");
+                        const para = await db.query("INSERT INTO paragraphs (para) VALUES ($1) RETURNING id;", [body[field]]);
+                        const id = para.rows[0].id;
+                        records.push(`para-${id}`);
+
+                    }
+                    else if (l[1] == "img") {
+                        console.log("new");
+                        const filteredObject = files.find(obj => obj.fieldname === field);
+                        const imageData = fs.readFileSync(`./uploads/${filteredObject.filename}`);
+                        const bufferData = Buffer.from(imageData, 'hex'); // Create Buffer from hexadecimal string
+
+                        const image = await db.query("INSERT INTO images (image_data , ext) VALUES ($1,$2) RETURNING id;", [bufferData, filteredObject.mimetype]);
+                        const id = image.rows[0].id;
+                        records.push(`img-${id}`);
+                        console.log("images added ");
+                    }
                 }
             }
+            await db.query("UPDATE blogs SET data=$1 WHERE id=$2;", [records, id]);
+            res.redirect(`/blogs/${id}`);
         }
-        const finalDataUpdate = await db.query("UPDATE blogs SET data=$1 WHERE id=$2;",[records,id]);
-        res.redirect(`/blogs/${id}`);
-    }
-    else{
-        res.redirect("/");
-    }
-})
+        else {
+            res.redirect("/");
+        }
+    })
 
 app.get('/delete/:id',async (req,res)=>{
     const id = req.params.id;
     try{
-        const result = await db.query("DELETE FROM blogs WHERE id = $1;",[id]);
+        await db.query("DELETE FROM blogs WHERE id = $1;",[id]);
         res.redirect("/blogs");
     }
     catch(err){
