@@ -46,12 +46,6 @@ console.log("dirname : " , __dirname);
 
 const app = express();
 const port = process.env.PORT;
-// const host = "0.0.0.0";
-
-
-// const upload = multer();
-
-// middleware
 
 app.use(session({
     secret : process.env.SESSION_SECRET,
